@@ -1,5 +1,7 @@
-export function render(VNode, container) {
+import { resetStateIndex } from "./state";
 
+export function render(VNode, container) {
+  resetStateIndex();
   //텍스트노트 생성
   if (typeof VNode === "string" || typeof VNode === "number") {
     const textNode = document.createTextNode(VNode);
