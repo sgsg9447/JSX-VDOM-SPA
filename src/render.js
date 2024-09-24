@@ -1,6 +1,20 @@
 import { resetStateIndex } from "./state";
 
+/**
+ * @typedef {Object} VNode
+ * @property {string|function} type - 노드의 타입 (태그 이름 또는 컴포넌트 함수)
+ * @property {Object} props - 노드의 속성 객체
+ */
+
+/**
+ * VNode를 실제 DOM으로 변환하여 container에 append하는 함수
+ * @param {VNode} VNode 변환할 Virtual DOM 노드
+ * @param {HTMLElement} container VNode를 추가할 부모 DOM 요소
+ * @returns {void}
+ */
+
 export function render(VNode, container) {
+  // useState 호출의 순서를 추저하기 위해 stateIndex 초기화
   resetStateIndex();
   //텍스트노트 생성
   if (typeof VNode === "string" || typeof VNode === "number") {
@@ -13,7 +27,9 @@ export function render(VNode, container) {
 
   //컴포넌트 생성
   if (typeof type === "function") {
+    //type 이 함수면, 함수(props)를 호출하여 컴포넌트의 VNode를 생성
     const componentVNode = type(props);
+    //컴포넌트의 VNode를 다시 render 함수로 재귀적으로 호출
     render(componentVNode, container);
     return;
   }
