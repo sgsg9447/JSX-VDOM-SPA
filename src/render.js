@@ -1,4 +1,9 @@
-import { resetStateIndex } from "./state";
+import {
+  resetStateIndex,
+  generateComponentId,
+  pushComponentId,
+  popComponentId,
+} from "./state";
 
 /**
  * @typedef {Object} VNode
@@ -14,8 +19,6 @@ import { resetStateIndex } from "./state";
  */
 
 export function render(VNode, container) {
-  // useState 호출의 순서를 추저하기 위해 stateIndex 초기화
-  resetStateIndex();
   //텍스트노트 생성
   if (typeof VNode === "string" || typeof VNode === "number") {
     const textNode = document.createTextNode(VNode);
@@ -27,10 +30,15 @@ export function render(VNode, container) {
 
   //컴포넌트 생성
   if (typeof type === "function") {
+    //컴포넌트 ID 생성
+    const componentId = generateComponentId();
+    pushComponentId(componentId);
+    resetStateIndex(componentId);
     //type 이 함수면, 함수(props)를 호출하여 컴포넌트의 VNode를 생성
     const componentVNode = type(props);
     //컴포넌트의 VNode를 다시 render 함수로 재귀적으로 호출
     render(componentVNode, container);
+    popComponentId();
     return;
   }
 
